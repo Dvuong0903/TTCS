@@ -186,16 +186,13 @@
         <table>
             <thead>
                 <tr>
-                    <th>#</th>
-                    <th>Kinh độ</th>
-                    <th>Vĩ độ</th>
-                    <th>Gần biển</th>
-                    <th>Tuổi</th>
-                    <th>Thu nhập</th>
-                    <th>Dân số</th>
-                    <th>Hộ</th>
-                    <th>Phòng</th>
-                    <th>Ngủ</th>
+                    <th>Thành phố</th>
+                    <th>Quận / Huyện</th>
+                    <th>Loại hình nhà ở</th>
+                    <th>Tình trạng giấy tờ pháp lý</th>
+                    <th>Diện tích</th>
+                    <th>Số tầng</th>
+                    <th>Số phòng ngủ</th>
                     <th>Giá</th>
                     <th>Thời gian</th>
                     <th></th>
@@ -212,17 +209,12 @@
     </div>
 
     <div class="note">
-        <b>LƯU Ý:</b> Đây là dữ liệu California Housing (1990).
+        <b>LƯU Ý:</b> Đây là dữ liệu chỉ để tham khảo.
     </div>
 
     <script>
         function goHome() {
             window.location.href = "index.html";
-        }
-        function getBadge(ocean) {
-            if (ocean === "NEAR BAY") return "badge blue";
-            if (ocean === "INLAND") return "badge orange";
-            return "badge green";
         }
 
         async function loadData() {
@@ -236,14 +228,12 @@
                 table.innerHTML += `
         <tr>
             <td>${index + 1}</td>
-            <td>${item.longitude}</td>
-            <td>${item.latitude}</td>
-            <td><span class="${getBadge(item.ocean)}">${item.ocean}</span></td>
-            <td>${item.houseAge}</td>
-            <td>${item.income}</td>
-            <td>${item.population}</td>
-            <td>${item.households}</td>
-            <td>${item.rooms}</td>
+            <td>${item.city}</td>
+            <td>${item.district}</td>
+            <td>${item.house_type}</td>
+            <td>${item.legal}</td>
+            <td>${item.area}</td>
+            <td>${item.floors}</td>
             <td>${item.bedrooms}</td>
             <td class="price">$${item.predictedPrice}</td>
             <td>${item.createdAt}</td>

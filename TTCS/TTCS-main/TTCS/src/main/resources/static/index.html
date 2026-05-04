@@ -756,37 +756,44 @@
             $('result-idle').style.display = 'none';
             $('result-content').style.display = 'flex';
 
+            // Giá dự đoán
             $('result-price').textContent = json.predicted_price_formatted;
-            $('result-sub').textContent = `≈ ${json.predicted_price.toLocaleString('vi-VN')} USD`;
+            $('result-sub').textContent =
+                `≈ ${json.predicted_price.toLocaleString('vi-VN')} USD`;
 
-            const proximityLabel = {
-                '<1H OCEAN': 'Cách biển < 1 giờ',
-                'INLAND': 'Trong đất liền',
-                'ISLAND': 'Trên đảo',
-                'NEAR BAY': 'Gần vịnh',
-                'NEAR OCEAN': 'Gần đại dương',
-            };
-
+            // Hiển thị chi tiết mới
             $('result-details').innerHTML = `
-      <div class="result-row">
-        <span>Vị trí</span>
-        <span>${proximityLabel[input.ocean_proximity] || input.ocean_proximity}</span>
-      </div>
-      <div class="result-row">
-        <span>Tọa độ</span>
-        <span>${input.latitude.toFixed(2)}°N, ${Math.abs(input.longitude).toFixed(2)}°W</span>
-      </div>
-      <div class="result-row">
-        <span>Thu nhập khu vực</span>
-        <span>$${(input.median_income * 10000).toLocaleString()}</span>
-      </div>
-      <div class="result-row">
-        <span>Tuổi nhà</span>
-        <span>${input.housing_median_age} năm</span>
-      </div>
+        <div class="result-row">
+            <span>Vị trí</span>
+            <span>${input.district}, ${input.city}</span>
+        </div>
+
+        <div class="result-row">
+            <span>Loại nhà</span>
+            <span>${input.house_type}</span>
+        </div>
+
+        <div class="result-row">
+            <span>Pháp lý</span>
+            <span>${input.legal_status}</span>
+        </div>
+
+        <div class="result-row">
+            <span>Diện tích</span>
+            <span>${input.area} m²</span>
+        </div>
+
+        <div class="result-row">
+            <span>Tổng phòng</span>
+            <span>${input.rooms}</span>
+        </div>
+
+        <div class="result-row">
+            <span>Phòng ngủ</span>
+            <span>${input.bedrooms}</span>
+        </div>
     `;
         }
-
         // ── enter key submit ─────────────────────────────────────
         document.addEventListener('keydown', e => {
             if (e.key === 'Enter') predict();
