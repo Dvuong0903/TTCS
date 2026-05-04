@@ -1,0 +1,1 @@
+Sửa lại hàm String errorMessage = exception.getFieldError().getDefaultMessage(); ở file GlobalException.java 

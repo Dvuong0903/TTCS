@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Lịch sử dự đoán</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background: #f3efe9;
+            padding: 30px;
+        }
+
+        /* HEADER */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .title h1 {
+            font-size: 24px;
+        }
+
+        .home-btn {
+            background: #fff;
+            border: 1px solid #ddd;
+            padding: 8px 15px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        /* FILTER BOX */
+        .filter-box {
+            background: #fff;
+            padding: 20px;
+            border-radius: 15px;
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+
+        .filter-box input {
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+            width: 250px;
+        }
+
+        .btn {
+            padding: 10px 15px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-refresh {
+            background: #eee;
+        }
+
+        .btn-filter {
+            background: #d97745;
+            color: white;
+        }
+
+        /* CARD */
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 15px;
+        }
+
+        /* TABLE */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th {
+            background: #f5f5f5;
+            padding: 12px;
+            font-size: 13px;
+        }
+
+        td {
+            padding: 12px;
+            text-align: center;
+            border-top: 1px solid #eee;
+        }
+
+        tr:hover {
+            background: #fafafa;
+        }
+
+        /* BADGE */
+        .badge {
+            padding: 5px 10px;
+            border-radius: 10px;
+            font-size: 12px;
+        }
+
+        .blue {
+            background: #d6e8ff;
+            color: #2b6cb0;
+        }
+
+        .orange {
+            background: #ffe5cc;
+            color: #b45309;
+        }
+
+        .green {
+            background: #d4f5e9;
+            color: #047857;
+        }
+
+        /* PRICE */
+        .price {
+            color: #16a34a;
+            font-weight: bold;
+        }
+
+        /* DELETE */
+        .delete {
+            border: 1px solid red;
+            color: red;
+            background: none;
+            padding: 5px 8px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        /* FOOTER */
+        .footer {
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* NOTE */
+        .note {
+            margin-top: 20px;
+            background: #fff3e8;
+            padding: 15px;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <div class="title">
+            <h1>🏠 Lịch sử dự đoán giá nhà</h1>
+        </div>
+        <button class="home-btn" onclick="goHome()">🏠 Trang chủ</button>
+    </div>
+
+    <!-- FILTER -->
+    <div class="filter-box">
+        <input type="text" placeholder="Nhập gần biển, kinh độ, vĩ độ...">
+        <input type="text" value="24/04/2026">
+        <input type="text" value="24/04/2026">
+        <button class="btn btn-refresh"> Làm mới</button>
+        <button class="btn btn-filter">🔎 Lọc kết quả</button>
+    </div>
+
+    <!-- TABLE -->
+    <div class="card">
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Kinh độ</th>
+                    <th>Vĩ độ</th>
+                    <th>Gần biển</th>
+                    <th>Tuổi</th>
+                    <th>Thu nhập</th>
+                    <th>Dân số</th>
+                    <th>Hộ</th>
+                    <th>Phòng</th>
+                    <th>Ngủ</th>
+                    <th>Giá</th>
+                    <th>Thời gian</th>
+                    <th></th>
+                </tr>
+            </thead>
+
+            <tbody id="table"></tbody>
+        </table>
+
+        <div class="footer">
+            <span>Hiển thị 1–5</span>
+            <span>Trang 1</span>
+        </div>
+    </div>
+
+    <div class="note">
+        <b>LƯU Ý:</b> Đây là dữ liệu California Housing (1990).
+    </div>
+
+    <script>
+        function goHome() {
+            window.location.href = "index.html";
+        }
+        function getBadge(ocean) {
+            if (ocean === "NEAR BAY") return "badge blue";
+            if (ocean === "INLAND") return "badge orange";
+            return "badge green";
+        }
+
+        async function loadData() {
+            const res = await fetch("http://localhost:8080/api/history");
+            const data = await res.json();
+
+            const table = document.getElementById("table");
+            table.innerHTML = "";
+
+            data.forEach((item, index) => {
+                table.innerHTML += `
+        <tr>
+            <td>${index + 1}</td>
+            <td>${item.longitude}</td>
+            <td>${item.latitude}</td>
+            <td><span class="${getBadge(item.ocean)}">${item.ocean}</span></td>
+            <td>${item.houseAge}</td>
+            <td>${item.income}</td>
+            <td>${item.population}</td>
+            <td>${item.households}</td>
+            <td>${item.rooms}</td>
+            <td>${item.bedrooms}</td>
+            <td class="price">$${item.predictedPrice}</td>
+            <td>${item.createdAt}</td>
+            <td>
+                <button class="delete" onclick="deleteItem(${item.id})">🗑</button>
+            </td>
+        </tr>
+        `;
+            });
+        }
+
+        async function deleteItem(id) {
+            await fetch(`http://localhost:8080/api/history/${id}`, {
+                method: "DELETE"
+            });
+            loadData();
+        }
+
+        loadData();
+    </script>
+
+</body>
+
+</html>

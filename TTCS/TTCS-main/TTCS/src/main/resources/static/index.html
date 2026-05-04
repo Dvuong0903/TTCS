@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>House Price Predictor</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap"
+        rel="stylesheet" />
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --sand: #F5F0E8;
+            --sand2: #EDE6D8;
+            --ink: #1A1714;
+            --ink2: #4A453E;
+            --ink3: #8A837A;
+            --terra: #C4622D;
+            --terra2: #E8845A;
+            --cream: #FDFAF5;
+            --border: rgba(26, 23, 20, 0.1);
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--sand);
+            color: var(--ink);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ── background texture ── */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background-image:
+                radial-gradient(ellipse 80% 60% at 10% 10%, rgba(196, 98, 45, 0.08) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 80% at 90% 90%, rgba(196, 98, 45, 0.06) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        /* ── layout ── */
+        .shell {
+            position: relative;
+            z-index: 1;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 3rem 2rem 6rem;
+        }
+
+        /* ── header ── */
+        header {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 3.5rem;
+        }
+
+        .eyebrow {
+            font-size: 11px;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--terra);
+            margin-bottom: 0.75rem;
+            font-weight: 500;
+        }
+
+        h1 {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(2.4rem, 5vw, 3.6rem);
+            line-height: 1.1;
+            color: var(--ink);
+            max-width: 560px;
+        }
+
+        h1 em {
+            font-style: italic;
+            color: var(--terra);
+        }
+
+        .subtitle {
+            margin-top: 1rem;
+            font-size: 15px;
+            color: var(--ink2);
+            max-width: 420px;
+            line-height: 1.6;
+            font-weight: 300;
+        }
+
+        /* ── divider ── */
+        .divider {
+            width: 48px;
+            height: 1px;
+            background: var(--terra);
+            margin: 1.5rem 0 2.5rem;
+        }
+
+        /* ── main grid ── */
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        @media (max-width: 720px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ── card ── */
+        .card {
+            background: var(--cream);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+        }
+
+        /* ── form ── */
+        .form-section-label {
+            font-size: 10px;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--terra);
+            font-weight: 500;
+            margin-bottom: 1.2rem;
+            margin-top: 1.6rem;
+        }
+
+        .form-section-label:first-child {
+            margin-top: 0;
+        }
+
+        .field-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .field-row.full {
+            grid-template-columns: 1fr;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        label {
+            font-size: 12px;
+            color: var(--ink2);
+            font-weight: 500;
+            letter-spacing: 0.02em;
+        }
+
+        input,
+        select {
+            background: var(--sand);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 9px 12px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            color: var(--ink);
+            outline: none;
+            transition: border-color 0.18s, box-shadow 0.18s;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: var(--terra);
+            box-shadow: 0 0 0 3px rgba(196, 98, 45, 0.12);
+        }
+
+        input.err,
+        select.err {
+            border-color: #C0392B;
+        }
+
+        /* ── submit ── */
+        .btn {
+            width: 100%;
+            margin-top: 1.8rem;
+            padding: 14px;
+            background: var(--ink);
+            color: var(--cream);
+            border: none;
+            border-radius: 10px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 0.04em;
+            cursor: pointer;
+            transition: background 0.18s, transform 0.12s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            background: var(--terra);
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* spinner */
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            display: none;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ── result panel ── */
+        .result-panel {
+            position: sticky;
+            top: 2rem;
+        }
+
+        .result-card {
+            background: var(--ink);
+            color: var(--cream);
+            border-radius: 16px;
+            padding: 2rem;
+            overflow: hidden;
+            position: relative;
+            min-height: 280px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .result-card::before {
+            content: '';
+            position: absolute;
+            top: -60px;
+            right: -60px;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: rgba(196, 98, 45, 0.15);
+        }
+
+        .result-card::after {
+            content: '';
+            position: absolute;
+            bottom: -40px;
+            left: -40px;
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: rgba(196, 98, 45, 0.08);
+        }
+
+        .result-idle {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            flex: 1;
+            text-align: center;
+            gap: 12px;
+            opacity: 0.4;
+        }
+
+        .result-idle svg {
+            opacity: 0.6;
+        }
+
+        .result-idle p {
+            font-size: 13px;
+            color: rgba(253, 250, 245, 0.7);
+            line-height: 1.5;
+        }
+
+        .result-content {
+            display: none;
+            flex-direction: column;
+            gap: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .result-label {
+            font-size: 10px;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--terra2);
+            font-weight: 500;
+        }
+
+        .result-price {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(2rem, 5vw, 3rem);
+            line-height: 1;
+            color: var(--cream);
+            margin-top: 0.3rem;
+        }
+
+        .result-sub {
+            font-size: 13px;
+            color: rgba(253, 250, 245, 0.5);
+            margin-top: 0.4rem;
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding-top: 0.75rem;
+            font-size: 13px;
+        }
+
+        .result-row span:first-child {
+            color: rgba(253, 250, 245, 0.5);
+        }
+
+        .result-row span:last-child {
+            color: var(--cream);
+            font-weight: 500;
+        }
+
+        /* error */
+        .error-msg {
+            background: #FDEDED;
+            border: 1px solid #f2bebe;
+            color: #922;
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: 13px;
+            margin-top: 1rem;
+            display: none;
+            line-height: 1.5;
+        }
+
+        /* ── tip card ── */
+        .tip-card {
+            margin-top: 1.5rem;
+            background: var(--sand2);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.2rem 1.4rem;
+        }
+
+        .tip-title {
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--ink3);
+            margin-bottom: 0.5rem;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 40px;
+            background: #1e1b18;
+            color: white;
+        }
+
+        .nav-right a {
+            margin-left: 15px;
+            padding: 8px 14px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .login {
+            background: white;
+            color: black;
+        }
+
+        .register {
+            background: #d97745;
+            color: white;
+        }
+
+        .history {
+            background: #4facfe;
+            color: white;
+        }
+
+        .logout {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .tip-text {
+            font-size: 13px;
+            color: var(--ink2);
+            line-height: 1.6;
+        }
+
+        /* ── footer ── */
+        footer {
+            margin-top: 4rem;
+            text-align: center;
+            font-size: 12px;
+            color: var(--ink3);
+        }
+
+        /* ── animate in ── */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .shell>* {
+            animation: fadeUp 0.5s ease both;
+        }
+
+        header {
+            animation-delay: 0s;
+        }
+
+        .grid {
+            animation-delay: 0.1s;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="logo">🏠 House AI</div>
+
+        <div class="nav-right" id="navRight">
+            <!-- JS render -->
+        </div>
+    </nav>
+    <div class="shell">
+
+        <header>
+            <p class="eyebrow">VietNam Housing · ML Predictor</p>
+            <h1>Estimate your<br /><em>home value</em></h1>
+            <p class="subtitle">Nhập thông tin căn nhà để nhận dự đoán giá từ mô hình HistGradientBoosting đã được tối
+                ưu.</p>
+            <div class="divider"></div>
+        </header>
+
+        <div class="grid">
+
+            <!-- ── Form ── -->
+            <div class="card">
+
+                <p class="form-section-label">Vị trí</p>
+                <div class="field-row">
+
+                    <!-- THÀNH PHỐ -->
+                    <div class="field">
+                        <label for="city">Thành phố</label>
+                        <select id="city">
+                            <option value="">-- Chọn --</option>
+                            <option value="hanoi">Hà Nội</option>
+                            <option value="hcm">Hồ Chí Minh</option>
+                        </select>
+                    </div>
+
+                    <!-- QUẬN / HUYỆN -->
+                    <div class="field">
+                        <label for="district">Quận / Huyện</label>
+                        <select id="district">
+                            <option value="">-- Chọn --</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <p class="form-section-label">Thông tin nhà ở</p>
+                <div class="field-row full">
+
+                    <div class="field">
+                        <label for="house_type">Loại hình nhà ở</label>
+                        <input type="text" id="house_type" placeholder="Ví dụ: Nhà phố, chung cư..." />
+                    </div>
+
+                    <div class="field">
+                        <label for="legal">Tình trạng giấy tờ pháp lý</label>
+                        <input type="text" id="legal" placeholder="Ví dụ: Sổ đỏ, sổ hồng..." />
+                    </div>
+
+                </div>
+
+                <p class="form-section-label">Thông tin chi tiết</p>
+                <div class="field-row">
+                    <div class="field">
+                        <label for="area">Diện tích</label>
+                        <input type="text" id="area" placeholder="Ví dụ: 100 m²" />
+                    </div>
+                    <div class="field">
+                        <label for="bedrooms">Số phòng ngủ <span style="color:var(--ink3);font-weight:300">(tùy
+                                chọn)</span></label>
+                        <input type="number" id="bedrooms" placeholder="455" step="1" min="1" />
+                    </div>
+                </div>
+                <div class="field-row full">
+
+                    <div class="field">
+                        <label for="floors">Số Tầng</label>
+                        <input type="text" id="floors" placeholder="Ví dụ: Nhà phố, chung cư..." />
+                    </div>
+
+                </div>
+
+                <button class="btn" id="predict-btn" onclick="predict()">
+                    <span id="btn-text">Dự đoán giá nhà</span>
+                    <div class="spinner" id="spinner"></div>
+                </button>
+
+                <div class="error-msg" id="error-msg"></div>
+            </div>
+
+            <!-- ── Result ── -->
+            <div class="result-panel">
+                <div class="result-card">
+                    <div class="result-idle" id="result-idle">
+                        <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                            <path d="M20 4L36 16V36H26V26H14V36H4V16L20 4Z" stroke="currentColor" stroke-width="1.5"
+                                stroke-linejoin="round" />
+                        </svg>
+                        <p>Điền thông tin bên trái<br />và nhấn dự đoán</p>
+                    </div>
+                    <div class="result-content" id="result-content">
+                        <div>
+                            <p class="result-label">Giá dự đoán</p>
+                            <p class="result-price" id="result-price">—</p>
+                            <p class="result-sub" id="result-sub"></p>
+                        </div>
+                        <div id="result-details"></div>
+                    </div>
+                </div>
+
+                <div class="tip-card">
+                    <p class="tip-title">Lưu ý</p>
+                    <p class="tip-text">Đây là dữ liệu do AI dự đoán. Giá trị dự đoán phản ánh giá thị
+                        trường ở mức tham khảo, không phải giá thực tế khi giao dịch.</p>
+                </div>
+            </div>
+
+        </div><!-- end grid -->
+
+        <footer>House Price Predictor · HistGradientBoostingRegressor · California Housing Dataset</footer>
+
+    </div>
+
+    <script>
+        const data = {
+            hanoi: [
+                "Ba Đình",
+                "Hoàn Kiếm",
+                "Cầu Giấy",
+                "Đống Đa",
+                "Hai Bà Trưng",
+                "Thanh Xuân"
+            ],
+            hcm: [
+                "Quận 1",
+                "Quận 3",
+                "Quận 7",
+                "Quận 10",
+                "Bình Thạnh",
+                "Thủ Đức"
+            ]
+        };
+
+        const citySelect = document.getElementById("city");
+        const districtSelect = document.getElementById("district");
+
+        citySelect.addEventListener("change", function () {
+            const city = this.value;
+
+            // reset
+            districtSelect.innerHTML = '<option value="">-- Chọn --</option>';
+
+            if (data[city]) {
+                data[city].forEach(district => {
+                    const option = document.createElement("option");
+                    option.value = district;
+                    option.textContent = district;
+                    districtSelect.appendChild(option);
+                });
+            }
+        });
+        //navbar
+
+        function renderNavbar() {
+            const nav = document.getElementById("navRight");
+            const user = localStorage.getItem("user");
+
+            if (user) {
+                // ✅ ĐÃ LOGIN
+                nav.innerHTML = `
+            <a href="history.html" class="history">📊 Lịch sử</a>
+            <a href="#" class="logout" onclick="logout()">🚪 Đăng xuất</a>
+        `;
+            } else {
+                // ❌ CHƯA LOGIN
+                nav.innerHTML = `
+            <a href="login.html" class="login">Đăng nhập</a>
+            <a href="register.html" class="register">Đăng ký</a>
+        `;
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem("user");
+            window.location.href = "agency.html"; // về giới thiệu 
+        }
+
+        renderNavbar();
+
+        // ── config ──────────────────────────────────────────────
+        const API_URL = 'http://localhost:8000/predict';
+
+        // ── helpers ─────────────────────────────────────────────
+        function $(id) { return document.getElementById(id); }
+
+        function setLoading(on) {
+            $('predict-btn').disabled = on;
+            $('btn-text').textContent = on ? 'Đang xử lý...' : 'Dự đoán giá nhà';
+            $('spinner').style.display = on ? 'block' : 'none';
+        }
+
+        function showError(msg) {
+            const el = $('error-msg');
+            el.textContent = msg;
+            el.style.display = 'block';
+        }
+
+        function hideError() {
+            $('error-msg').style.display = 'none';
+        }
+
+        function clearValidation() {
+            document.querySelectorAll('.err').forEach(el => el.classList.remove('err'));
+        }
+
+        // ── validate ─────────────────────────────────────────────
+        function getAndValidate() {
+            clearValidation();
+            const fields = {
+                longitude: parseFloat($('longitude').value),
+                latitude: parseFloat($('latitude').value),
+                housing_median_age: parseFloat($('housing_median_age').value),
+                total_rooms: parseFloat($('total_rooms').value),
+                population: parseFloat($('population').value),
+                households: parseFloat($('households').value),
+                median_income: parseFloat($('median_income').value),
+                ocean_proximity: $('ocean_proximity').value,
+            };
+
+            const optional_bedrooms = $('total_bedrooms').value;
+            if (optional_bedrooms !== '') {
+                fields.total_bedrooms = parseFloat(optional_bedrooms);
+            } else {
+                fields.total_bedrooms = null;
+            }
+
+            let valid = true;
+            const required = ['longitude', 'latitude', 'housing_median_age', 'total_rooms', 'population', 'households', 'median_income', 'ocean_proximity'];
+
+            required.forEach(key => {
+                const val = fields[key];
+                const el = $(key);
+                if (val === '' || val === null || (typeof val === 'number' && isNaN(val))) {
+                    el.classList.add('err');
+                    valid = false;
+                }
+            });
+
+            if (!valid) {
+                showError('Vui lòng điền đầy đủ các trường bắt buộc.');
+                return null;
+            }
+
+            return fields;
+        }
+
+        // ── predict ──────────────────────────────────────────────
+        async function predict() {
+            hideError();
+            const data = getAndValidate();
+            if (!data) return;
+
+            setLoading(true);
+
+            try {
+                const res = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                if (!res.ok) {
+                    const err = await res.json().catch(() => ({}));
+                    throw new Error(err.detail || `Lỗi ${res.status}`);
+                }
+
+                const json = await res.json();
+                showResult(json, data);
+
+            } catch (e) {
+                if (e.message.includes('fetch') || e.message.includes('Failed')) {
+                    showError('Không kết nối được đến API. Hãy chắc chắn server đang chạy tại http://localhost:8000');
+                } else {
+                    showError('Lỗi: ' + e.message);
+                }
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        // ── show result ──────────────────────────────────────────
+        function showResult(json, input) {
+            $('result-idle').style.display = 'none';
+            $('result-content').style.display = 'flex';
+
+            $('result-price').textContent = json.predicted_price_formatted;
+            $('result-sub').textContent = `≈ ${json.predicted_price.toLocaleString('vi-VN')} USD`;
+
+            const proximityLabel = {
+                '<1H OCEAN': 'Cách biển < 1 giờ',
+                'INLAND': 'Trong đất liền',
+                'ISLAND': 'Trên đảo',
+                'NEAR BAY': 'Gần vịnh',
+                'NEAR OCEAN': 'Gần đại dương',
+            };
+
+            $('result-details').innerHTML = `
+      <div class="result-row">
+        <span>Vị trí</span>
+        <span>${proximityLabel[input.ocean_proximity] || input.ocean_proximity}</span>
+      </div>
+      <div class="result-row">
+        <span>Tọa độ</span>
+        <span>${input.latitude.toFixed(2)}°N, ${Math.abs(input.longitude).toFixed(2)}°W</span>
+      </div>
+      <div class="result-row">
+        <span>Thu nhập khu vực</span>
+        <span>$${(input.median_income * 10000).toLocaleString()}</span>
+      </div>
+      <div class="result-row">
+        <span>Tuổi nhà</span>
+        <span>${input.housing_median_age} năm</span>
+      </div>
+    `;
+        }
+
+        // ── enter key submit ─────────────────────────────────────
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Enter') predict();
+        });
+    </script>
+</body>
+
+</html>
