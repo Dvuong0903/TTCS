@@ -29,8 +29,9 @@ public class AuthController {
     // API Đăng nhập: POST http://localhost:8080/api/auth/login
     @PostMapping("/login")
     public ResponseEntity<ResponseObject> login(@Valid @RequestBody LoginRequest request) {
-        String message = userService.login(request);
-        ResponseObject response = new ResponseObject("SUCCESS", message, null);
+        String token = userService.login(request);
+        ResponseObject response = new ResponseObject("SUCCESS", "Đăng nhập thành công!", token);
+        //                                                                                 ↑ token vào data
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

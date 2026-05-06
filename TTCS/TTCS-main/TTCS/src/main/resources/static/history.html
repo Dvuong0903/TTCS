@@ -186,6 +186,7 @@
         <table>
             <thead>
                 <tr>
+                    <th>STT</th>
                     <th>Thành phố</th>
                     <th>Quận / Huyện</th>
                     <th>Loại hình nhà ở</th>
@@ -218,7 +219,15 @@
         }
 
         async function loadData() {
-            const res = await fetch("http://localhost:8080/api/history");
+            const token = localStorage.getItem("jwtToken");
+            if (!token) {
+                window.location.href = "login.html";
+                return;
+            }
+
+            const res = await fetch("http://localhost:8080/api/predict/history", {
+                headers: { "Authorization": "Bearer " + token }
+            });
             const data = await res.json();
 
             const table = document.getElementById("table");
@@ -246,8 +255,10 @@
         }
 
         async function deleteItem(id) {
-            await fetch(`http://localhost:8080/api/history/${id}`, {
-                method: "DELETE"
+            const token = localStorage.getItem("jwtToken");
+            await fetch(`http://localhost:8080/api/predict/history/${id}`, {
+                method: "DELETE",
+                headers: { "Authorization": "Bearer " + token }
             });
             loadData();
         }

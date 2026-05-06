@@ -12,4 +12,14 @@ public class PredictionRequest {
     @NotNull(message = "Diện tích không được để trống!")
     @Min(value = 10, message = "Diện tích nhà phải từ 10m2 trở lên!")
     private Double area;
+
+    @NotNull(message = "Thành phố không được để trống!")
+    private String city;        // mã số dạng string, ví dụ: "0", "1"
+
+    private String district;    // mã số dạng string
+    private String houseType;   // mã số dạng string, ví dụ: "0".."10"
+    private String legal;       // mã số dạng string, ví dụ: "0".."7"
+
+    private Double bedrooms;
+    private Double floors;
 }

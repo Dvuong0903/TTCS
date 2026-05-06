@@ -26,8 +26,14 @@ public class PredictionController {
     private PredictionService predictionService;
 
     @PostMapping
-    public ResponseEntity<ResponseObject> predictHousePrice(@Valid @RequestBody PredictionRequest request) {
-        double price = predictionService.getPredictionAndSave(request.getArea());
+    public ResponseEntity<ResponseObject> predictHousePrice(
+            @Valid @RequestBody PredictionRequest request,
+            Principal principal) {                          // ← thêm Principal
+
+        String username = principal.getName();
+
+        // Truyền cả request và username vào service
+        double price = predictionService.getPredictionAndSave(request, username);
 
         if (price == 0.0) {
             throw new RuntimeException("Lỗi kết nối tới AI Python ở cổng 5000");
@@ -39,11 +45,9 @@ public class PredictionController {
 
     @GetMapping("/history")
     public ResponseEntity<?> getHistory(Principal principal) {
-
         String username = principal.getName();
-
-        List<PredictionHistory> historyList = predictionHistoryRepository.findByUsernameOrderByCreatedAtDesc(username);
-
+        List<PredictionHistory> historyList =
+                predictionHistoryRepository.findByUsernameOrderByCreatedAtDesc(username);
         return ResponseEntity.ok(historyList);
     }
 }

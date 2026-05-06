@@ -626,9 +626,9 @@
 
         function renderNavbar() {
             const nav = document.getElementById("navRight");
-            const user = localStorage.getItem("user");
+            const token = localStorage.getItem("jwtToken");
 
-            if (user) {
+            if (token) {
                 // ✅ ĐÃ LOGIN
                 nav.innerHTML = `
             <a href="history.html" class="history">📊 Lịch sử</a>
@@ -645,13 +645,14 @@
 
         function logout() {
             localStorage.removeItem("user");
+            localStorage.removeItem("jwtToken");
             window.location.href = "agency.html"; // về giới thiệu 
         }
 
         renderNavbar();
 
         // ── config ──────────────────────────────────────────────
-        const API_URL = 'http://localhost:8000/predict';
+        const API_URL = 'http://localhost:8080/api/predict';
 
         // ── helpers ─────────────────────────────────────────────
         function $(id) { return document.getElementById(id); }
@@ -679,42 +680,41 @@
         // ── validate ─────────────────────────────────────────────
         function getAndValidate() {
             clearValidation();
-            const fields = {
-                longitude: parseFloat($('longitude').value),
-                latitude: parseFloat($('latitude').value),
-                housing_median_age: parseFloat($('housing_median_age').value),
-                total_rooms: parseFloat($('total_rooms').value),
-                population: parseFloat($('population').value),
-                households: parseFloat($('households').value),
-                median_income: parseFloat($('median_income').value),
-                ocean_proximity: $('ocean_proximity').value,
-            };
 
-            const optional_bedrooms = $('total_bedrooms').value;
-            if (optional_bedrooms !== '') {
-                fields.total_bedrooms = parseFloat(optional_bedrooms);
-            } else {
-                fields.total_bedrooms = null;
-            }
+            const area      = $('area').value.trim();
+            const bedrooms  = $('bedrooms').value.trim();
+            const floors    = $('floors').value.trim();
+            const city      = $('city').value.trim();
+            const district  = $('district').value.trim();
+            const houseType = $('house_type').value.trim();
+            const legal     = $('legal').value.trim();
 
             let valid = true;
-            const required = ['longitude', 'latitude', 'housing_median_age', 'total_rooms', 'population', 'households', 'median_income', 'ocean_proximity'];
 
-            required.forEach(key => {
-                const val = fields[key];
-                const el = $(key);
-                if (val === '' || val === null || (typeof val === 'number' && isNaN(val))) {
-                    el.classList.add('err');
-                    valid = false;
-                }
-            });
+            if (!area || isNaN(parseFloat(area))) {
+                $('area').classList.add('err'); valid = false;
+            }
+            if (!city) {
+                $('city').classList.add('err'); valid = false;
+            }
+            if (!district) {
+                $('district').classList.add('err'); valid = false;
+            }
 
             if (!valid) {
                 showError('Vui lòng điền đầy đủ các trường bắt buộc.');
                 return null;
             }
 
-            return fields;
+            return {
+                area:      parseFloat(area),
+                bedrooms:  bedrooms ? parseFloat(bedrooms) : 0,
+                floors:    floors   ? parseFloat(floors)   : 1,
+                city:      city,
+                district:  district,
+                houseType: houseType,
+                legal:     legal
+            };
         }
 
         // ── predict ──────────────────────────────────────────────
@@ -723,18 +723,28 @@
             const data = getAndValidate();
             if (!data) return;
 
+            const token = localStorage.getItem("jwtToken");
+            if (!token) {
+                showError('Bạn cần đăng nhập để dự đoán giá nhà.');
+                setTimeout(() => window.location.href = "login.html", 1500);
+                return;
+            }
+
             setLoading(true);
 
             try {
                 const res = await fetch(API_URL, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
                     body: JSON.stringify(data)
                 });
 
                 if (!res.ok) {
                     const err = await res.json().catch(() => ({}));
-                    throw new Error(err.detail || `Lỗi ${res.status}`);
+                    throw new Error(err.message || `Lỗi ${res.status}`);
                 }
 
                 const json = await res.json();
@@ -742,7 +752,7 @@
 
             } catch (e) {
                 if (e.message.includes('fetch') || e.message.includes('Failed')) {
-                    showError('Không kết nối được đến API. Hãy chắc chắn server đang chạy tại http://localhost:8000');
+                    showError('Không kết nối được đến server. Hãy chắc chắn Spring Boot đang chạy tại http://localhost:8080');
                 } else {
                     showError('Lỗi: ' + e.message);
                 }
@@ -756,41 +766,36 @@
             $('result-idle').style.display = 'none';
             $('result-content').style.display = 'flex';
 
-            // Giá dự đoán
-            $('result-price').textContent = json.predicted_price_formatted;
-            $('result-sub').textContent =
-                `≈ ${json.predicted_price.toLocaleString('vi-VN')} USD`;
+            const price = json.data;
+            const formatted = price.toLocaleString('vi-VN') + ' triệu VNĐ';
 
-            // Hiển thị chi tiết mới
+            $('result-price').textContent = formatted;
+            $('result-sub').textContent = `≈ ${(price / 1000).toFixed(2)} tỷ VNĐ`;
+
             $('result-details').innerHTML = `
         <div class="result-row">
             <span>Vị trí</span>
             <span>${input.district}, ${input.city}</span>
         </div>
-
         <div class="result-row">
             <span>Loại nhà</span>
-            <span>${input.house_type}</span>
+            <span>${input.houseType || '—'}</span>
         </div>
-
         <div class="result-row">
             <span>Pháp lý</span>
-            <span>${input.legal_status}</span>
+            <span>${input.legal || '—'}</span>
         </div>
-
         <div class="result-row">
             <span>Diện tích</span>
             <span>${input.area} m²</span>
         </div>
-
         <div class="result-row">
-            <span>Tổng phòng</span>
-            <span>${input.rooms}</span>
+            <span>Số tầng</span>
+            <span>${input.floors}</span>
         </div>
-
         <div class="result-row">
             <span>Phòng ngủ</span>
-            <span>${input.bedrooms}</span>
+            <span>${input.bedrooms || '—'}</span>
         </div>
     `;
         }
