@@ -20,11 +20,9 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    // Nhúng máy tạo Token vào đây
     @Autowired
     private JwtUtil jwtUtil;
 
-    // 1. Logic Đăng ký
     public User register(RegisterRequest request) {
         // Kiểm tra xem user đã tồn tại chưa
         if (userRepository.existsByUsername(request.getUsername())) {
@@ -36,19 +34,17 @@ public class UserService {
         // Tạo user mới
         User newUser = new User();
         newUser.setUsername(request.getUsername());
-
-        // Mã hóa mật khẩu trước khi lưu
         newUser.setPassword(passwordEncoder.encode(request.getPassword()));
+        newUser.setFullname(request.getFullname());  
+        newUser.setEmail(request.getEmail());  
 
         return userRepository.save(newUser);
     }
 
-    // 2. Logic Đăng nhập
     public String login(LoginRequest request) {
         User user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
-        // So sánh mật khẩu người dùng nhập vào với mật khẩu đã mã hóa trong DB
         boolean isMatch = passwordEncoder.matches(request.getPassword(), user.getPassword());
 
         if (!isMatch) {

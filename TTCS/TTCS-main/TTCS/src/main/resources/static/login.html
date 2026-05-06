@@ -168,27 +168,22 @@
                 const result = await response.json();
 
                 if (response.ok) {
-                    // ✅ LƯU USER VÀ TOKEN BẢO MẬT
                     localStorage.setItem("user", username);
 
-                    // LƯU CÁI CHUỖI TOKEN LOẰNG NGOẰNG VÀO TRÌNH DUYỆT (CỰC KỲ QUAN TRỌNG)
                     if (result.data) {
                         localStorage.setItem("jwtToken", result.data);
                     }
 
-                    // Hiện chữ thông báo màu xanh, tuyệt đối không in result.data ra đây
                     document.getElementById("message").style.color = "green";
                     document.getElementById("message").innerText = "Đăng nhập thành công!"; // Ghi cứng chữ này luôn cho đẹp
 
-                    // ✅ CHUYỂN TRANG
                     setTimeout(() => {
-                        window.location.href = "index.html"; // hoặc "/"
+                        window.location.href = "index.html"; 
                     }, 800);
 
                 } else {
                     document.getElementById("message").style.color = "red";
 
-                    // lỗi validation từ backend
                     if (result.data) {
                         if (result.data.username) {
                             document.getElementById("usernameError").innerText = result.data.username;
