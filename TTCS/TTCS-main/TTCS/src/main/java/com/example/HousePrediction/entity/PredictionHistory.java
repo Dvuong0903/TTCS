@@ -17,6 +17,14 @@ public class PredictionHistory {
 
     private double area;
     private double predictedPrice;
+    
+    private String city;
+    private String district;
+    private String houseType;
+    private String legal;
+    private Double floors;
+    private Double bedrooms;
+
     @Column(name = "username")
     private String username;
     private LocalDateTime createdAt = LocalDateTime.now();

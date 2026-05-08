@@ -50,4 +50,15 @@ public class PredictionController {
                 predictionHistoryRepository.findByUsernameOrderByCreatedAtDesc(username);
         return ResponseEntity.ok(historyList);
     }
+
+    @DeleteMapping("/history/{id}")
+    public ResponseEntity<?> deleteHistory(@PathVariable Long id, Principal principal) {
+        PredictionHistory history = predictionHistoryRepository.findById(id).orElse(null);
+        if (history != null && history.getUsername().equals(principal.getName())) {
+            predictionHistoryRepository.deleteById(id);
+            return ResponseEntity.ok(new ResponseObject("SUCCESS", "Xóa thành công", null));
+        }
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(new ResponseObject("FAILED", "Không có quyền xóa", null));
+    }
 }

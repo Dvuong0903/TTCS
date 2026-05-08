@@ -3,269 +3,588 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Lịch sử dự đoán</title>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lịch sử dự đoán | House AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --sand: #F5F0E8;
+            --sand2: #EDE6D8;
+            --ink: #1A1714;
+            --ink2: #4A453E;
+            --ink3: #8A837A;
+            --terra: #C4622D;
+            --terra2: #E8845A;
+            --cream: #FDFAF5;
+            --border: rgba(26, 23, 20, 0.1);
+            --success: #047857;
+            --danger: #B91C1C;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'DM Sans', sans-serif;
         }
 
         body {
-            background: #f3efe9;
-            padding: 30px;
+            background: var(--sand);
+            color: var(--ink);
+            min-height: 100vh;
+            padding-bottom: 50px;
         }
 
-        /* HEADER */
-        .header {
+        /* NAVBAR */
+        .navbar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            padding: 15px 40px;
+            background: #1e1b18;
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
 
-        .title {
+        .logo {
+            font-family: 'DM Serif Display', serif;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .nav-right a {
+            margin-left: 15px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        .home-link { background: rgba(255,255,255,0.1); color: white; }
+        .home-link:hover { background: rgba(255,255,255,0.2); }
+        .logout-link { background: var(--danger); color: white; }
+
+        /* HEADER */
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        header {
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: var(--ink3);
+            font-size: 15px;
+        }
+
+        /* FILTER SECTION */
+        .filter-section {
+            background: var(--cream);
+            padding: 25px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            margin-bottom: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            align-items: end;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+        }
+
+        .filter-group {
             display: flex;
-            align-items: center;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .filter-group label {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--ink2);
+        }
+
+        .filter-group input, .filter-group select {
+            padding: 10px 14px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--sand);
+            outline: none;
+            font-size: 14px;
+        }
+
+        .filter-group input:focus { border-color: var(--terra); }
+
+        .btn-group {
+            display: flex;
             gap: 10px;
         }
 
-        .title h1 {
-            font-size: 24px;
-        }
-
-        .home-btn {
-            background: #fff;
-            border: 1px solid #ddd;
-            padding: 8px 15px;
-            border-radius: 10px;
-            cursor: pointer;
-        }
-
-        /* FILTER BOX */
-        .filter-box {
-            background: #fff;
-            padding: 20px;
-            border-radius: 15px;
-            display: flex;
-            gap: 20px;
-            margin-bottom: 20px;
-            align-items: center;
-        }
-
-        .filter-box input {
-            padding: 10px;
-            border-radius: 10px;
-            border: 1px solid #ddd;
-            width: 250px;
-        }
-
         .btn {
-            padding: 10px 15px;
+            padding: 10px 20px;
             border-radius: 10px;
             border: none;
+            font-weight: 500;
             cursor: pointer;
+            transition: 0.2s;
+            font-size: 14px;
         }
 
-        .btn-refresh {
-            background: #eee;
+        .btn-primary { background: var(--ink); color: white; }
+        .btn-primary:hover { background: var(--terra); }
+        .btn-secondary { background: var(--sand2); color: var(--ink); }
+
+        /* TABLE SECTION */
+        .table-container {
+            background: var(--cream);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
         }
 
-        .btn-filter {
-            background: #d97745;
-            color: white;
-        }
-
-        /* CARD */
-        .card {
-            background: white;
-            border-radius: 15px;
-            padding: 15px;
-        }
-
-        /* TABLE */
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 10px;
+            text-align: left;
         }
 
         th {
-            background: #f5f5f5;
-            padding: 12px;
-            font-size: 13px;
+            background: #fafafa;
+            padding: 16px;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--ink3);
+            border-bottom: 1px solid var(--border);
         }
 
         td {
-            padding: 12px;
-            text-align: center;
-            border-top: 1px solid #eee;
+            padding: 16px;
+            font-size: 14px;
+            border-bottom: 1px solid var(--border);
+            color: var(--ink2);
         }
 
-        tr:hover {
-            background: #fafafa;
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: rgba(26, 23, 20, 0.02); }
+
+        .price-cell {
+            font-weight: 700;
+            color: var(--success);
         }
 
-        /* BADGE */
         .badge {
-            padding: 5px 10px;
-            border-radius: 10px;
-            font-size: 12px;
-        }
-
-        .blue {
-            background: #d6e8ff;
-            color: #2b6cb0;
-        }
-
-        .orange {
-            background: #ffe5cc;
-            color: #b45309;
-        }
-
-        .green {
-            background: #d4f5e9;
-            color: #047857;
-        }
-
-        /* PRICE */
-        .price {
-            color: #16a34a;
-            font-weight: bold;
-        }
-
-        /* DELETE */
-        .delete {
-            border: 1px solid red;
-            color: red;
-            background: none;
-            padding: 5px 8px;
+            padding: 4px 10px;
             border-radius: 6px;
-            cursor: pointer;
+            font-size: 11px;
+            font-weight: 700;
         }
 
-        /* FOOTER */
-        .footer {
-            margin-top: 10px;
+        .badge-city { background: #E0E7FF; color: #4338CA; }
+        .badge-type { background: #FEF3C7; color: #92400E; }
+
+        .btn-delete {
+            background: none;
+            border: none;
+            color: var(--ink3);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            transition: 0.2s;
+        }
+
+        .btn-delete:hover {
+            background: #FEE2E2;
+            color: var(--danger);
+        }
+
+        /* PAGINATION */
+        .pagination {
             display: flex;
             justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background: #fafafa;
+            border-top: 1px solid var(--border);
         }
 
-        /* NOTE */
-        .note {
-            margin-top: 20px;
-            background: #fff3e8;
-            padding: 15px;
-            border-radius: 10px;
+        .pagination-info { font-size: 13px; color: var(--ink3); }
+        .pagination-controls { display: flex; gap: 8px; }
+
+        .page-btn {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: white;
+            cursor: pointer;
+            font-size: 13px;
+            transition: 0.2s;
         }
+
+        .page-btn:hover { border-color: var(--terra); color: var(--terra); }
+        .page-btn.active { background: var(--ink); color: white; border-color: var(--ink); }
+        .page-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+        /* MODAL */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .modal {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .modal h2 { font-family: 'DM Serif Display', serif; margin-bottom: 15px; }
+        .modal p { color: var(--ink2); margin-bottom: 25px; font-size: 15px; }
+        .modal-btns { display: flex; gap: 10px; justify-content: center; }
+
+        /* LOADING */
+        .loading-overlay {
+            padding: 40px;
+            text-align: center;
+            display: none;
+        }
+
+        .spinner {
+            width: 30px;
+            height: 30px;
+            border: 3px solid var(--sand2);
+            border-top-color: var(--terra);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .empty-state {
+            padding: 60px;
+            text-align: center;
+            display: none;
+        }
+
+        .empty-state i { font-size: 40px; display: block; margin-bottom: 15px; opacity: 0.2; }
     </style>
 </head>
 
 <body>
-
-    <div class="header">
-        <div class="title">
-            <h1>🏠 Lịch sử dự đoán giá nhà</h1>
+    <nav class="navbar">
+        <div class="logo" onclick="location.href='index.html'">🏠 House AI</div>
+        <div class="nav-right">
+            <a href="index.html" class="home-link">Trang chủ</a>
+            <a href="#" class="logout-link" onclick="logout()">Đăng xuất</a>
         </div>
-        <button class="home-btn" onclick="goHome()">🏠 Trang chủ</button>
-    </div>
+    </nav>
 
-    <!-- FILTER -->
-    <div class="filter-box">
-        <input type="text" placeholder="Nhập gần biển, kinh độ, vĩ độ...">
-        <input type="text" value="24/04/2026">
-        <input type="text" value="24/04/2026">
-        <button class="btn btn-refresh"> Làm mới</button>
-        <button class="btn btn-filter">🔎 Lọc kết quả</button>
-    </div>
+    <div class="container">
+        <header>
+            <h1>Lịch sử dự đoán</h1>
+            <p class="subtitle">Quản lý và xem lại các kết quả dự đoán giá nhà của bạn.</p>
+        </header>
 
-    <!-- TABLE -->
-    <div class="card">
-        <table>
-            <thead>
-                <tr>
-                    <th>STT</th>
-                    <th>Thành phố</th>
-                    <th>Quận / Huyện</th>
-                    <th>Loại hình nhà ở</th>
-                    <th>Tình trạng giấy tờ pháp lý</th>
-                    <th>Diện tích</th>
-                    <th>Số tầng</th>
-                    <th>Số phòng ngủ</th>
-                    <th>Giá</th>
-                    <th>Thời gian</th>
-                    <th></th>
-                </tr>
-            </thead>
+        <!-- FILTER -->
+        <div class="filter-section">
+            <div class="filter-group">
+                <label>Tìm kiếm</label>
+                <input type="text" id="searchInput" placeholder="Tìm thành phố, quận, loại nhà...">
+            </div>
+            <div class="filter-group">
+                <label>Từ ngày</label>
+                <input type="date" id="dateFrom">
+            </div>
+            <div class="filter-group">
+                <label>Đến ngày</label>
+                <input type="date" id="dateTo">
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-secondary" onclick="resetFilters()">Làm mới</button>
+                <button class="btn btn-primary" onclick="applyFilters()">🔎 Lọc</button>
+            </div>
+        </div>
 
-            <tbody id="table"></tbody>
-        </table>
+        <!-- TABLE -->
+        <div class="table-container">
+            <div id="loading" class="loading-overlay">
+                <div class="spinner"></div>
+                <p>Đang tải dữ liệu...</p>
+            </div>
 
-        <div class="footer">
-            <span>Hiển thị 1–5</span>
-            <span>Trang 1</span>
+            <div id="emptyState" class="empty-state">
+                <i>📭</i>
+                <p>Không tìm thấy lịch sử dự đoán nào.</p>
+            </div>
+
+            <table id="historyTable">
+                <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Thông tin nhà</th>
+                        <th>Vị trí</th>
+                        <th>Diện tích / Tầng</th>
+                        <th>Giá dự đoán</th>
+                        <th>Ngày thực hiện</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+
+            <!-- PAGINATION -->
+            <div class="pagination">
+                <div class="pagination-info" id="paginationInfo">Hiển thị 0–0 của 0</div>
+                <div class="pagination-controls" id="paginationControls"></div>
+            </div>
         </div>
     </div>
 
-    <div class="note">
-        <b>LƯU Ý:</b> Đây là dữ liệu chỉ để tham khảo.
+    <!-- DELETE MODAL -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal">
+            <h2>Xác nhận xóa?</h2>
+            <p>Hành động này không thể hoàn tác. Bạn có chắc muốn xóa bản ghi này không?</p>
+            <div class="modal-btns">
+                <button class="btn btn-secondary" onclick="closeModal()">Hủy</button>
+                <button class="btn btn-primary" style="background: var(--danger)" id="confirmDeleteBtn">Xóa ngay</button>
+            </div>
+        </div>
     </div>
 
     <script>
-        function goHome() {
-            window.location.href = "index.html";
-        }
+        let allData = [];
+        let filteredData = [];
+        let currentPage = 1;
+        const pageSize = 8;
+        let deleteId = null;
+
+        const cityMap = {
+            'hanoi': 'Hà Nội',
+            'hcm': 'TP. Hồ Chí Minh'
+        };
 
         async function loadData() {
             const token = localStorage.getItem("jwtToken");
-            if (!token) {
-                window.location.href = "login.html";
+            if (!token) { window.location.href = "login.html"; return; }
+
+            showLoading(true);
+            try {
+                const res = await fetch("http://localhost:8080/api/predict/history", {
+                    headers: { "Authorization": "Bearer " + token }
+                });
+                
+                if (!res.ok) throw new Error("Không thể tải dữ liệu");
+                
+                allData = await res.json();
+                filteredData = [...allData];
+                renderTable();
+            } catch (err) {
+                console.error(err);
+                alert("Lỗi kết nối server!");
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById("tableBody");
+            const empty = document.getElementById("emptyState");
+            const table = document.getElementById("historyTable");
+            
+            if (filteredData.length === 0) {
+                table.style.display = "none";
+                empty.style.display = "block";
+                updatePaginationInfo(0, 0, 0);
                 return;
             }
 
-            const res = await fetch("http://localhost:8080/api/predict/history", {
-                headers: { "Authorization": "Bearer " + token }
-            });
-            const data = await res.json();
+            table.style.display = "table";
+            empty.style.display = "none";
+            tbody.innerHTML = "";
 
-            const table = document.getElementById("table");
-            table.innerHTML = "";
+            const start = (currentPage - 1) * pageSize;
+            const end = Math.min(start + pageSize, filteredData.length);
+            const pageData = filteredData.slice(start, end);
 
-            data.forEach((item, index) => {
-                table.innerHTML += `
-        <tr>
-            <td>${index + 1}</td>
-            <td>${item.city}</td>
-            <td>${item.district}</td>
-            <td>${item.house_type}</td>
-            <td>${item.legal}</td>
-            <td>${item.area}</td>
-            <td>${item.floors}</td>
-            <td>${item.bedrooms}</td>
-            <td class="price">$${item.predictedPrice}</td>
-            <td>${item.createdAt}</td>
-            <td>
-                <button class="delete" onclick="deleteItem(${item.id})">🗑</button>
-            </td>
-        </tr>
-        `;
+            pageData.forEach((item, index) => {
+                const globalIndex = start + index + 1;
+                const formattedPrice = new Intl.NumberFormat('vi-VN').format(item.predictedPrice) + ' tr VNĐ';
+                const date = new Date(item.createdAt).toLocaleString('vi-VN', {
+                    day: '2-digit', month: '2-digit', year: 'numeric',
+                    hour: '2-digit', minute: '2-digit'
+                });
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${globalIndex}</td>
+                        <td>
+                            <div style="font-weight:700; color:var(--ink)">${item.houseType || 'Chưa xác định'}</div>
+                            <div style="font-size:12px; color:var(--ink3)">Pháp lý: ${item.legal || '—'}</div>
+                        </td>
+                        <td>
+                            <span class="badge badge-city">${cityMap[item.city] || item.city || '—'}</span>
+                            <div style="font-size:12px; margin-top:4px">${item.district || ''}</div>
+                        </td>
+                        <td>
+                            <div>${item.area} m²</div>
+                            <div style="font-size:12px; color:var(--ink3)">${item.floors || 1} tầng / ${item.bedrooms || 0} PN</div>
+                        </td>
+                        <td class="price-cell">${formattedPrice}</td>
+                        <td>${date}</td>
+                        <td>
+                            <button class="btn-delete" onclick="openDeleteModal(${item.id})">🗑</button>
+                        </td>
+                    </tr>
+                `;
             });
+
+            updatePaginationInfo(start + 1, end, filteredData.length);
+            renderPaginationControls();
         }
 
-        async function deleteItem(id) {
-            const token = localStorage.getItem("jwtToken");
-            await fetch(`http://localhost:8080/api/predict/history/${id}`, {
-                method: "DELETE",
-                headers: { "Authorization": "Bearer " + token }
+        // FILTER LOGIC
+        function applyFilters() {
+            const query = document.getElementById("searchInput").value.toLowerCase();
+            const from = document.getElementById("dateFrom").value;
+            const to = document.getElementById("dateTo").value;
+
+            filteredData = allData.filter(item => {
+                const matchSearch = 
+                    (item.city && item.city.toLowerCase().includes(query)) ||
+                    (item.district && item.district.toLowerCase().includes(query)) ||
+                    (item.houseType && item.houseType.toLowerCase().includes(query)) ||
+                    (item.legal && item.legal.toLowerCase().includes(query));
+
+                const itemDate = item.createdAt.split('T')[0];
+                const matchDateFrom = !from || itemDate >= from;
+                const matchDateTo = !to || itemDate <= to;
+
+                return matchSearch && matchDateFrom && matchDateTo;
             });
-            loadData();
+
+            currentPage = 1;
+            renderTable();
+        }
+
+        function resetFilters() {
+            document.getElementById("searchInput").value = "";
+            document.getElementById("dateFrom").value = "";
+            document.getElementById("dateTo").value = "";
+            filteredData = [...allData];
+            currentPage = 1;
+            renderTable();
+        }
+
+        // PAGINATION HELPERS
+        function updatePaginationInfo(start, end, total) {
+            document.getElementById("paginationInfo").textContent = `Hiển thị ${start}–${end} của ${total}`;
+        }
+
+        function renderPaginationControls() {
+            const controls = document.getElementById("paginationControls");
+            const totalPages = Math.ceil(filteredData.length / pageSize);
+            controls.innerHTML = "";
+
+            if (totalPages <= 1) return;
+
+            // Prev
+            const prevBtn = document.createElement("button");
+            prevBtn.className = "page-btn";
+            prevBtn.innerHTML = "←";
+            prevBtn.disabled = currentPage === 1;
+            prevBtn.onclick = () => { currentPage--; renderTable(); };
+            controls.appendChild(prevBtn);
+
+            // Page numbers
+            for (let i = 1; i <= totalPages; i++) {
+                const btn = document.createElement("button");
+                btn.className = `page-btn ${i === currentPage ? 'active' : ''}`;
+                btn.textContent = i;
+                btn.onclick = () => { currentPage = i; renderTable(); };
+                controls.appendChild(btn);
+            }
+
+            // Next
+            const nextBtn = document.createElement("button");
+            nextBtn.className = "page-btn";
+            nextBtn.innerHTML = "→";
+            nextBtn.disabled = currentPage === totalPages;
+            nextBtn.onclick = () => { currentPage++; renderTable(); };
+            controls.appendChild(nextBtn);
+        }
+
+        // DELETE LOGIC
+        function openDeleteModal(id) {
+            deleteId = id;
+            document.getElementById("deleteModal").style.display = "flex";
+            document.getElementById("confirmDeleteBtn").onclick = confirmDelete;
+        }
+
+        function closeModal() {
+            document.getElementById("deleteModal").style.display = "none";
+            deleteId = null;
+        }
+
+        async function confirmDelete() {
+            if (!deleteId) return;
+            const token = localStorage.getItem("jwtToken");
+            
+            try {
+                const res = await fetch(`http://localhost:8080/api/predict/history/${deleteId}`, {
+                    method: "DELETE",
+                    headers: { "Authorization": "Bearer " + token }
+                });
+                
+                if (res.ok) {
+                    allData = allData.filter(item => item.id !== deleteId);
+                    applyFilters(); // Re-apply current filters to view
+                } else {
+                    alert("Không thể xóa bản ghi!");
+                }
+            } catch (err) {
+                alert("Lỗi khi xóa!");
+            } finally {
+                closeModal();
+            }
+        }
+
+        function showLoading(show) {
+            document.getElementById("loading").style.display = show ? "block" : "none";
+        }
+
+        function logout() {
+            localStorage.removeItem("jwtToken");
+            window.location.href = "login.html";
         }
 
         loadData();
     </script>
-
 </body>
-
 </html>

@@ -46,6 +46,15 @@ public class PredictionService {
             history.setArea(request.getArea());
             history.setPredictedPrice(predictedPrice);
             history.setUsername(username);
+            
+            // Bổ sung các trường mới
+            history.setCity(request.getCity());
+            history.setDistrict(request.getDistrict());
+            history.setHouseType(request.getHouseType());
+            history.setLegal(request.getLegal());
+            history.setFloors(request.getFloors());
+            history.setBedrooms(request.getBedrooms());
+
             repository.save(history);
 
             return predictedPrice;
