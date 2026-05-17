@@ -470,14 +470,21 @@
         }
 
         // FILTER LOGIC
+        // FILTER LOGIC - BẢN NÂNG CẤP THÔNG MINH
         function applyFilters() {
-            const query = document.getElementById("searchInput").value.toLowerCase();
+            const query = document.getElementById("searchInput").value.toLowerCase().trim();
             const from = document.getElementById("dateFrom").value;
             const to = document.getElementById("dateTo").value;
 
             filteredData = allData.filter(item => {
-                const matchSearch = 
+                // Tự động hiểu các biến thể của Hà Nội và HCM
+                const isHanoiSearch = query === 'hà nội' || query === 'hanoi' || query === 'hn';
+                const isHCMSearch = query === 'hồ chí minh' || query === 'hcm' || query === 'hcmc' || query === 'sai gon' || query === 'sài gòn';
+
+                const matchSearch =
                     (item.city && item.city.toLowerCase().includes(query)) ||
+                    (isHanoiSearch && item.city === 'HN') ||    // Gõ Hà Nội ra HN
+                    (isHCMSearch && item.city === 'HCM') ||   // Gõ HCM ra HCM
                     (item.district && item.district.toLowerCase().includes(query)) ||
                     (item.houseType && item.houseType.toLowerCase().includes(query)) ||
                     (item.legal && item.legal.toLowerCase().includes(query));
