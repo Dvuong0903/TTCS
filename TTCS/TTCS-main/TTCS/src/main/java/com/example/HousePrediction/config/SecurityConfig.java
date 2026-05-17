@@ -47,7 +47,7 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
-                        "OPTIONS",          // ✅ cho phép preflight request đi qua
+                        "OPTIONS",          
                         "/api/auth/**",
                         "/login.html",
                         "/register.html",

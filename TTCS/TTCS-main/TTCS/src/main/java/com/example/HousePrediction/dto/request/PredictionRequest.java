@@ -14,11 +14,11 @@ public class PredictionRequest {
     private Double area;
 
     @NotNull(message = "Thành phố không được để trống!")
-    private String city;        // mã số dạng string, ví dụ: "0", "1"
+    private String city;       
 
-    private String district;    // mã số dạng string
-    private String houseType;   // mã số dạng string, ví dụ: "0".."10"
-    private String legal;       // mã số dạng string, ví dụ: "0".."7"
+    private String district;    
+    private String houseType;  
+    private String legal;      
 
     private Double bedrooms;
     private Double floors;

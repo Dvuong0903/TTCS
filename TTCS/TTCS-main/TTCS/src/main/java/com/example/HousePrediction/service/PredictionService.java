@@ -25,8 +25,6 @@ public class PredictionService {
         try {
             RestTemplate restTemplate = new RestTemplate();
 
-            // Gửi đủ 7 đặc trưng sang Python
-            // city/district/houseType/legal là mã số dạng string (khớp với encoder)
             Map<String, Object> requestData = new HashMap<>();
             requestData.put("area",      request.getArea());
             requestData.put("bedrooms",  request.getBedrooms() != null ? request.getBedrooms() : 0.0);
