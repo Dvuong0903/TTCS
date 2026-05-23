@@ -5,7 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lịch sử dự đoán | House AI</title>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;700&display=swap"
+        rel="stylesheet">
     <style>
         :root {
             --sand: #F5F0E8;
@@ -63,9 +65,19 @@
             transition: 0.3s;
         }
 
-        .home-link { background: rgba(255,255,255,0.1); color: white; }
-        .home-link:hover { background: rgba(255,255,255,0.2); }
-        .logout-link { background: var(--danger); color: white; }
+        .home-link {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .home-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .logout-link {
+            background: var(--danger);
+            color: white;
+        }
 
         /* HEADER */
         .container {
@@ -89,6 +101,8 @@
             font-size: 15px;
         }
 
+
+
         /* FILTER SECTION */
         .filter-section {
             background: var(--cream);
@@ -97,10 +111,10 @@
             border: 1px solid var(--border);
             margin-bottom: 30px;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 20px;
             align-items: end;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
         }
 
         .filter-group {
@@ -117,7 +131,8 @@
             color: var(--ink2);
         }
 
-        .filter-group input, .filter-group select {
+        .filter-group input,
+        .filter-group select {
             padding: 10px 14px;
             border-radius: 10px;
             border: 1px solid var(--border);
@@ -126,7 +141,9 @@
             font-size: 14px;
         }
 
-        .filter-group input:focus { border-color: var(--terra); }
+        .filter-group input:focus {
+            border-color: var(--terra);
+        }
 
         .btn-group {
             display: flex;
@@ -143,9 +160,19 @@
             font-size: 14px;
         }
 
-        .btn-primary { background: var(--ink); color: white; }
-        .btn-primary:hover { background: var(--terra); }
-        .btn-secondary { background: var(--sand2); color: var(--ink); }
+        .btn-primary {
+            background: var(--ink);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--terra);
+        }
+
+        .btn-secondary {
+            background: var(--sand2);
+            color: var(--ink);
+        }
 
         /* TABLE SECTION */
         .table-container {
@@ -153,7 +180,7 @@
             border-radius: 16px;
             border: 1px solid var(--border);
             overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
         }
 
         table {
@@ -179,8 +206,13 @@
             color: var(--ink2);
         }
 
-        tr:last-child td { border-bottom: none; }
-        tr:hover td { background: rgba(26, 23, 20, 0.02); }
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background: rgba(26, 23, 20, 0.02);
+        }
 
         .price-cell {
             font-weight: 700;
@@ -194,8 +226,15 @@
             font-weight: 700;
         }
 
-        .badge-city { background: #E0E7FF; color: #4338CA; }
-        .badge-type { background: #FEF3C7; color: #92400E; }
+        .badge-city {
+            background: #E0E7FF;
+            color: #4338CA;
+        }
+
+        .badge-type {
+            background: #FEF3C7;
+            color: #92400E;
+        }
 
         .btn-delete {
             background: none;
@@ -222,8 +261,15 @@
             border-top: 1px solid var(--border);
         }
 
-        .pagination-info { font-size: 13px; color: var(--ink3); }
-        .pagination-controls { display: flex; gap: 8px; }
+        .pagination-info {
+            font-size: 13px;
+            color: var(--ink3);
+        }
+
+        .pagination-controls {
+            display: flex;
+            gap: 8px;
+        }
 
         .page-btn {
             width: 32px;
@@ -239,15 +285,27 @@
             transition: 0.2s;
         }
 
-        .page-btn:hover { border-color: var(--terra); color: var(--terra); }
-        .page-btn.active { background: var(--ink); color: white; border-color: var(--ink); }
-        .page-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+        .page-btn:hover {
+            border-color: var(--terra);
+            color: var(--terra);
+        }
+
+        .page-btn.active {
+            background: var(--ink);
+            color: white;
+            border-color: var(--ink);
+        }
+
+        .page-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
 
         /* MODAL */
         .modal-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0, 0, 0, 0.5);
             display: none;
             align-items: center;
             justify-content: center;
@@ -263,9 +321,22 @@
             text-align: center;
         }
 
-        .modal h2 { font-family: 'DM Serif Display', serif; margin-bottom: 15px; }
-        .modal p { color: var(--ink2); margin-bottom: 25px; font-size: 15px; }
-        .modal-btns { display: flex; gap: 10px; justify-content: center; }
+        .modal h2 {
+            font-family: 'DM Serif Display', serif;
+            margin-bottom: 15px;
+        }
+
+        .modal p {
+            color: var(--ink2);
+            margin-bottom: 25px;
+            font-size: 15px;
+        }
+
+        .modal-btns {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
 
         /* LOADING */
         .loading-overlay {
@@ -284,7 +355,11 @@
             margin: 0 auto 15px;
         }
 
-        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
 
         .empty-state {
             padding: 60px;
@@ -292,7 +367,12 @@
             display: none;
         }
 
-        .empty-state i { font-size: 40px; display: block; margin-bottom: 15px; opacity: 0.2; }
+        .empty-state i {
+            font-size: 40px;
+            display: block;
+            margin-bottom: 15px;
+            opacity: 0.2;
+        }
     </style>
 </head>
 
@@ -311,6 +391,8 @@
             <p class="subtitle">Quản lý và xem lại các kết quả dự đoán giá nhà của bạn.</p>
         </header>
 
+
+
         <!-- FILTER -->
         <div class="filter-section">
             <div class="filter-group">
@@ -324,6 +406,17 @@
             <div class="filter-group">
                 <label>Đến ngày</label>
                 <input type="date" id="dateTo">
+            </div>
+            <div class="filter-group">
+                <label>Sắp xếp theo</label>
+                <select id="sortBy" onchange="applyFilters()">
+                    <option value="dateDesc">Thời gian: Mới nhất</option>
+                    <option value="dateAsc">Thời gian: Cũ nhất</option>
+                    <option value="priceAsc">Giá: Thấp → Cao</option>
+                    <option value="priceDesc">Giá: Cao → Thấp</option>
+                    <option value="areaAsc">Diện tích: Nhỏ → Lớn</option>
+                    <option value="areaDesc">Diện tích: Lớn → Nhỏ</option>
+                </select>
             </div>
             <div class="btn-group">
                 <button class="btn btn-secondary" onclick="resetFilters()">Làm mới</button>
@@ -373,7 +466,8 @@
             <p>Hành động này không thể hoàn tác. Bạn có chắc muốn xóa bản ghi này không?</p>
             <div class="modal-btns">
                 <button class="btn btn-secondary" onclick="closeModal()">Hủy</button>
-                <button class="btn btn-primary" style="background: var(--danger)" id="confirmDeleteBtn">Xóa ngay</button>
+                <button class="btn btn-primary" style="background: var(--danger)" id="confirmDeleteBtn">Xóa
+                    ngay</button>
             </div>
         </div>
     </div>
@@ -399,9 +493,9 @@
                 const res = await fetch("http://localhost:8080/api/predict/history", {
                     headers: { "Authorization": "Bearer " + token }
                 });
-                
+
                 if (!res.ok) throw new Error("Không thể tải dữ liệu");
-                
+
                 allData = await res.json();
                 filteredData = [...allData];
                 renderTable();
@@ -417,7 +511,7 @@
             const tbody = document.getElementById("tableBody");
             const empty = document.getElementById("emptyState");
             const table = document.getElementById("historyTable");
-            
+
             if (filteredData.length === 0) {
                 table.style.display = "none";
                 empty.style.display = "block";
@@ -469,25 +563,36 @@
             renderPaginationControls();
         }
 
+        // HELPER: Loại bỏ dấu tiếng Việt để tìm kiếm không dấu
+        function removeAccents(str) {
+            if (!str) return "";
+            return str
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/đ/g, 'd')
+                .replace(/Đ/g, 'd')
+                .toLowerCase();
+        }
+
         // FILTER LOGIC
         // FILTER LOGIC - BẢN NÂNG CẤP THÔNG MINH
         function applyFilters() {
-            const query = document.getElementById("searchInput").value.toLowerCase().trim();
+            const rawQuery = document.getElementById("searchInput").value.trim();
+            const query = removeAccents(rawQuery); // Loại bỏ dấu của từ khóa tìm kiếm
             const from = document.getElementById("dateFrom").value;
             const to = document.getElementById("dateTo").value;
 
+            // 1. Thực hiện Lọc dữ liệu
             filteredData = allData.filter(item => {
-                // Tự động hiểu các biến thể của Hà Nội và HCM
-                const isHanoiSearch = query === 'hà nội' || query === 'hanoi' || query === 'hn';
-                const isHCMSearch = query === 'hồ chí minh' || query === 'hcm' || query === 'hcmc' || query === 'sai gon' || query === 'sài gòn';
+                const cityNameEn = item.city || "";
+                const cityNameVi = cityMap[cityNameEn] || cityNameEn;
 
+                // Loại bỏ dấu của cả từ khóa tìm kiếm và dữ liệu để so sánh không dấu
                 const matchSearch =
-                    (item.city && item.city.toLowerCase().includes(query)) ||
-                    (isHanoiSearch && item.city === 'HN') ||    // Gõ Hà Nội ra HN
-                    (isHCMSearch && item.city === 'HCM') ||   // Gõ HCM ra HCM
-                    (item.district && item.district.toLowerCase().includes(query)) ||
-                    (item.houseType && item.houseType.toLowerCase().includes(query)) ||
-                    (item.legal && item.legal.toLowerCase().includes(query));
+                    removeAccents(cityNameVi).includes(query) ||
+                    removeAccents(item.district).includes(query) ||
+                    removeAccents(item.houseType).includes(query) ||
+                    removeAccents(item.legal).includes(query);
 
                 const itemDate = item.createdAt.split('T')[0];
                 const matchDateFrom = !from || itemDate >= from;
@@ -495,6 +600,22 @@
 
                 return matchSearch && matchDateFrom && matchDateTo;
             });
+
+            // 2. Thực hiện Sắp xếp dữ liệu (Sorting)
+            const sortBy = document.getElementById("sortBy").value;
+            if (sortBy === "dateDesc") {
+                filteredData.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            } else if (sortBy === "dateAsc") {
+                filteredData.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+            } else if (sortBy === "priceAsc") {
+                filteredData.sort((a, b) => a.predictedPrice - b.predictedPrice);
+            } else if (sortBy === "priceDesc") {
+                filteredData.sort((a, b) => b.predictedPrice - a.predictedPrice);
+            } else if (sortBy === "areaAsc") {
+                filteredData.sort((a, b) => a.area - b.area);
+            } else if (sortBy === "areaDesc") {
+                filteredData.sort((a, b) => b.area - a.area);
+            }
 
             currentPage = 1;
             renderTable();
@@ -504,7 +625,12 @@
             document.getElementById("searchInput").value = "";
             document.getElementById("dateFrom").value = "";
             document.getElementById("dateTo").value = "";
+            document.getElementById("sortBy").value = "dateDesc";
             filteredData = [...allData];
+
+            // Mặc định sắp xếp theo thời gian mới nhất khi reset
+            filteredData.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
             currentPage = 1;
             renderTable();
         }
@@ -562,13 +688,13 @@
         async function confirmDelete() {
             if (!deleteId) return;
             const token = localStorage.getItem("jwtToken");
-            
+
             try {
                 const res = await fetch(`http://localhost:8080/api/predict/history/${deleteId}`, {
                     method: "DELETE",
                     headers: { "Authorization": "Bearer " + token }
                 });
-                
+
                 if (res.ok) {
                     allData = allData.filter(item => item.id !== deleteId);
                     applyFilters(); // Re-apply current filters to view
@@ -594,4 +720,5 @@
         loadData();
     </script>
 </body>
+
 </html>
